@@ -1,6 +1,6 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
     "declarationDir": "lib/dts",
     "baseUrl": "src"
   },
