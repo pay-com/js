@@ -2,9 +2,11 @@
   "name": "@pay-com/js",
   "version": "1.1.1",
   "description": "",
-  "keywords": [],
-  "license": "ISC",
-  "author": "",
+  "keywords": [
+    "payments"
+  ],
+  "license": "MIT",
+  "author": "Pay.com",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
