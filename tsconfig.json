@@ -1,21 +1,8 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
     "declarationDir": "lib/dts",
-    "baseUrl": "src",
-    "target": "es5",
-    "outDir": "lib",
-    "lib": ["esnext", "dom"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": false
+    "baseUrl": "src"
   },
   "include": ["src"]
 }

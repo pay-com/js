@@ -75,7 +75,7 @@ Thats it! You are now ready to securely accept payments in your website.
 If you wish to render the fields without a submission button for more control, you have to pass the `submitButton: false` option to the `toggles` key under the `universal` function:
 
 ```javascript
-checkout.universal({
+checkout.render({
   container: '#paycom_checkout',
   toggles: {
     submitButton: false
