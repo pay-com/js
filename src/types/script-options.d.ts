@@ -1,9 +1,10 @@
 interface PayComScriptQueryParameters {
-  identifier: string;
-  sandbox?: boolean;
-  debug?: boolean;
+  identifier: string
+  sandbox?: boolean
+  debug?: boolean
 }
 
 export interface PayComScriptOptions extends PayComScriptQueryParameters {
-  sdkBaseURL?: string;
+  sdkUrlOverride?: string
+  live?: boolean
 }

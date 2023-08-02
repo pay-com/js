@@ -1,19 +1,7 @@
+import { PayComNamespace } from 'types'
 import { findScript, insertScriptElement } from './utils'
 import { PayComScriptOptions } from './types/script-options'
-import type {
-  PayComNamespace,
-  EVENT_TYPES,
-  ListenerFn,
-  PaypalOpts,
-  UniversalOpts,
-  UpdateTransactionDetailsOpts,
-  SubmitOpts,
-  RenderOpts,
-  CheckoutToggles,
-  CheckoutObject,
-  PayComFunction,
-  CheckoutFunction
-} from './types'
+
 /**
  * Load the PayCom JS SDK script asynchronously.
  *
@@ -30,22 +18,14 @@ function loadScript(
   // resolve with null when running in Node
   if (typeof window === 'undefined') return PromisePonyfill.resolve(null)
 
-  const { sdkBaseURL } = options
+  const { live, sdkUrlOverride } = options
 
-  let jsUrl = ''
-  const url = window.location.hostname
-  if (sdkBaseURL) {
-    jsUrl = sdkBaseURL
-  } else if (
-    ['localhost', 'dev', 'staging'].some(envKey =>
-      window.location.hostname.includes(envKey)
-    )
-  ) {
-    jsUrl = 'https://js.dev.pay.com/v1.js'
-  } else if (url.includes('.sandbox.')) {
-    jsUrl = 'https://js.sandbox.pay.com/v1.js'
-  } else {
-    jsUrl = 'https://js.pay.com/v1.js'
+  let jsUrl = live
+    ? 'https://js.pay.com/v1.js'
+    : 'https://js.staging.pay.com/v1.js'
+
+  if (sdkUrlOverride) {
+    jsUrl = sdkUrlOverride
   }
 
   const namespace = 'Pay'
@@ -150,18 +130,5 @@ const com = async (
   return Pay.com(options)
 }
 
-export type {
-  PayComNamespace,
-  PaypalOpts,
-  EVENT_TYPES,
-  ListenerFn,
-  UpdateTransactionDetailsOpts,
-  SubmitOpts,
-  RenderOpts,
-  UniversalOpts,
-  CheckoutToggles,
-  CheckoutObject,
-  PayComFunction,
-  CheckoutFunction
-}
+export * from 'types'
 export default { com }

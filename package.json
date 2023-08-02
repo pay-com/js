@@ -25,13 +25,24 @@
     "build:watch": "rollup -c --watch",
     "build": "rollup -c",
     "prepublishOnly": "npm run build",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": "eslint . --cache --fix --ignore-path '.eslintignore' --max-warnings 0",
+    "**/*.{js,ts,md}": "prettier --write"
   },
   "devDependencies": {
+    "@pay-com/eslint-config-react": "^2.0.3",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "csstype": "^3.0.9",
+    "eslint": "^8.46.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "events": "^3.3.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0",
     "rollup": "^2.70.1",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-dts": "^4.0.0",

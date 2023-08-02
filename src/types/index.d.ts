@@ -81,10 +81,30 @@ export interface CheckoutToggles {
    */
   acceptTermsAndConditionsCheckbox?: boolean
   /**
+   * If true, won't display required additional fields, such as email for EU  3ds.
+   * @default false
+   */
+  disableAdditionalFields?: boolean
+  /**
    * If true, will render native browser checkboxes instead of ours.
    * @default false
    */
   nativeCheckboxes?: boolean
+  /**
+   * If true, on mobile view all fields will be in one column.
+   * @default false
+   */
+  mobileColumn?: boolean
+  /**
+   * If true, will render credit card brand on number input
+   * @default false
+   */
+  withCardNumberBrand?: boolean
+  /**
+   * If true, will render a tooltip on the card CVV input
+   * @default false
+   */
+  withCvvTooltip?: boolean
 }
 
 export interface PaypalOpts {
@@ -158,12 +178,23 @@ export type LanguageLocalizationOverride = {
   }
 }
 
-export interface DividerStyle {
-  text: PayCssConfig
-  divider: {
-    color: PayCssConfig['color']
-    height: PayCssConfig['height']
+export interface DividerStyles {
+  text?: PayCssConfig
+  divider?: {
+    marginBottom?: PayCssConfig['marginBottom']
+    color?: PayCssConfig['color']
+    height?: PayCssConfig['height']
+    ':disabled'?: {
+      color?: PayCssConfig['color']
+      height?: PayCssConfig['height']
+    }
   }
+}
+
+export type ExpandablePaymentMethods = 'upi' | 'netbanking'
+export interface ApmStyle {
+  divider?: DividerStyles
+  input?: PayCssConfig
 }
 
 export interface UniversalOpts {
@@ -181,10 +212,11 @@ export interface UniversalOpts {
     savedPaymentMethods?: PayCssConfig
     expressCheckout?: PayCssConfig
     apmButtons?: PayCssConfig
+    apms?: Partial<Record<ExpandablePaymentMethods, ApmStyle>>
     dividers?: {
-      showOtherWaysToPay?: DividerStyle
-      payWith?: DividerStyle
-      savedPaymentMethods?: DividerStyle
+      showOtherWaysToPay?: DividerStyles
+      payWith?: DividerStyles
+      savedPaymentMethods?: DividerStyles
     }
     existingSource?: {
       deleteText?: PayCssConfig
@@ -305,12 +337,22 @@ export type SubmitResponse = {
   consumerId: string
 }
 
-type FormattedErrors = {
+type ValidateResponse = {
   valid: boolean
   invalidFields: string[]
+  paymentMethodDetails?: {
+    type: string
+    card: {
+      bin: string
+      last4: string
+      name: string
+    }
+  }
 }
+
 type RenderFn = (renderOpts: RenderOpts) => Promise<void>
 type PaypalFn = (paypalOpts: PaypalOpts) => Promise<void>
+type BlurFn = () => void
 type UniversalFn = (universalOpts: UniversalOpts) => Promise<void>
 type SubmitFn = (
   opts?: SubmitOpts,
@@ -323,7 +365,9 @@ interface UpdateOpts {
 }
 type UpdateFn = (updateOpts: UpdateOpts) => Promise<void>
 
-type ValidateFn = (frameType?: ELEMENT_TYPES) => Promise<FormattedErrors | void>
+type ValidateFn = (
+  frameType?: ELEMENT_TYPES
+) => Promise<ValidateResponse | void>
 type ResetFn = (frameType?: ELEMENT_TYPES) => Promise<void>
 
 export type UpdateTransactionDetailsOpts = {
@@ -374,6 +418,7 @@ export type CheckoutObject = {
   update: UpdateFn
   updateTransactionDetails: UpdateTransactionDetailsFn
   submit: SubmitFn
+  blur: BlurFn
   validate: ValidateFn
   reset: ResetFn
   pay: PayFn
