@@ -11,6 +11,7 @@
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "repository": {
@@ -25,7 +26,6 @@
     "build:watch": "rollup -c --watch",
     "build": "rollup -c",
     "prepublishOnly": "npm run build",
-    "prepublish": "npm run build",
     "prepare": "husky install"
   },
   "lint-staged": {
