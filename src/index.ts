@@ -1,5 +1,31 @@
-import { PayComNamespace } from 'types'
 import { findScript, insertScriptElement } from './utils'
+import {
+  CheckoutToggles,
+  PaypalOpts,
+  RenderOpts,
+  UniversalToggles,
+  LanguageLocalizationOverride,
+  DividerStyles,
+  ExpandablePaymentMethods,
+  ApmStyle,
+  UniversalOpts,
+  SubmitOpts,
+  FailureError,
+  CheckoutOpts,
+  EVENT_TYPES,
+  ListenerFn,
+  ValidationResponse,
+  ELEMENT_TYPES,
+  SubmitResponse,
+  UpdateTransactionDetailsOpts,
+  PayOpts,
+  PayFn,
+  UpdateTransactionDetailsFn,
+  CheckoutObject,
+  CheckoutFunction,
+  PayComFunction,
+  PayComNamespace
+} from './types'
 import { PayComScriptOptions } from './types/script-options'
 
 /**
@@ -130,5 +156,31 @@ const com = async (
   return Pay.com(options)
 }
 
-export * from 'types'
+export type {
+  CheckoutToggles,
+  PaypalOpts,
+  RenderOpts,
+  UniversalToggles,
+  LanguageLocalizationOverride,
+  DividerStyles,
+  ExpandablePaymentMethods,
+  ApmStyle,
+  UniversalOpts,
+  SubmitOpts,
+  FailureError,
+  CheckoutOpts,
+  EVENT_TYPES,
+  ListenerFn,
+  ValidationResponse,
+  ELEMENT_TYPES,
+  SubmitResponse,
+  UpdateTransactionDetailsOpts,
+  PayOpts,
+  PayFn,
+  UpdateTransactionDetailsFn,
+  CheckoutObject,
+  CheckoutFunction,
+  PayComFunction,
+  PayComNamespace
+}
 export default { com }
