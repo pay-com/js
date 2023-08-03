@@ -1,4 +1,4 @@
-<h1 align="center">Pay Components JS Package</h1>
+<h1>Pay Components JS Package</h1>
 
 Pay Components are ready-to-use PCI DSS compliant payment fields you can embed into your checkout page through simple code. Your branding and styling remain untouched, and you don't have to worry about storing card data.
 
