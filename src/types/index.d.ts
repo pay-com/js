@@ -337,15 +337,17 @@ export type SubmitResponse = {
   consumerId: string
 }
 
-type ValidateResponse = {
+export type ValidateResponse = {
   valid: boolean
   invalidFields: string[]
   paymentMethodDetails?: {
     type: string
-    card: {
+    card?: {
       bin: string
       last4: string
       name: string
+      expirationMonth: string
+      expirationYear: string
     }
   }
 }
