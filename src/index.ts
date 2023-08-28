@@ -1,4 +1,10 @@
-import { findScript, insertScriptElement } from './utils'
+import {
+  attachScriptListeners,
+  findScript,
+  getDefaultPromiseImplementation,
+  insertScriptElement,
+  validateArguments
+} from './utils'
 import {
   CheckoutToggles,
   PaypalOpts,
@@ -28,21 +34,11 @@ import {
 } from './types'
 import { PayComScriptOptions } from './types/script-options'
 
-/**
- * Load the PayCom JS SDK script asynchronously.
- *
- * @param {Object} options - used to configure query parameters and data attributes for the JS SDK.
- * @param {PromiseConstructor} [PromisePonyfill=window.Promise] - optional Promise Constructor ponyfill.
- * @return {Promise<Object>} PayComObject - reference to the global window PayCom object.
- */
-function loadScript(
+const loadScript = (
   options: PayComScriptOptions,
   PromisePonyfill: PromiseConstructor
-): Promise<PayComNamespace | null> {
+): Promise<PayComNamespace> => {
   validateArguments(options, PromisePonyfill)
-
-  // resolve with null when running in Node
-  if (typeof window === 'undefined') return PromisePonyfill.resolve(null)
 
   const { live, sdkUrlOverride } = options
 
@@ -54,12 +50,28 @@ function loadScript(
     jsUrl = sdkUrlOverride
   }
 
-  const namespace = 'Pay'
-  const existingWindowNamespace = getPayComWindowNamespace(namespace)
+  const existingWindowNamespace = window.Pay
 
-  // resolve with the existing global PayCom namespace when a script with the same params already exists
-  if (findScript(jsUrl) && existingWindowNamespace) {
+  const currentScript = findScript(jsUrl)
+  if (currentScript && existingWindowNamespace) {
     return PromisePonyfill.resolve(existingWindowNamespace)
+  }
+
+  if (currentScript) {
+    return new PromisePonyfill((resolve, reject) => {
+      attachScriptListeners({
+        script: currentScript,
+        onSuccess: () => {
+          const loadedWindowNamespace = window.Pay
+          if (loadedWindowNamespace) {
+            return resolve(loadedWindowNamespace)
+          }
+
+          reject(new Error(`The script failed to load.`))
+        },
+        onError: () => reject(new Error(`The script failed to load.`))
+      })
+    })
   }
 
   return loadCustomScript(
@@ -68,30 +80,23 @@ function loadScript(
     },
     PromisePonyfill
   ).then(() => {
-    const newWindowNamespace = getPayComWindowNamespace(namespace)
+    const newWindowNamespace = window.Pay
 
     if (newWindowNamespace) {
       return newWindowNamespace
     }
 
-    throw new Error(`The window.${namespace} global variable is not available.`)
+    throw new Error(`The window.Pay global variable is not available.`)
   })
 }
 
-/**
- * Load a custom script asynchronously.
- *
- * @param {Object} options - used to set the script url and attributes.
- * @param {PromiseConstructor} [PromisePonyfill=window.Promise] - optional Promise Constructor ponyfill.
- * @return {Promise<void>} returns a promise to indicate if the script was successfully loaded.
- */
-function loadCustomScript(
+const loadCustomScript = (
   options: {
     url: string
     attributes?: Record<string, string>
   },
   PromisePonyfill: PromiseConstructor
-): Promise<void> {
+): Promise<void> => {
   validateArguments(options, PromisePonyfill)
 
   const { url, attributes } = options
@@ -104,54 +109,21 @@ function loadCustomScript(
     throw new Error('Expected attributes to be an object.')
   }
 
-  return new PromisePonyfill((resolve, reject) => {
-    // resolve with undefined when running in Node
-    if (typeof window === 'undefined') return resolve()
-
-    return insertScriptElement({
+  return new PromisePonyfill((resolve, reject) =>
+    insertScriptElement({
       url,
       attributes,
       onSuccess: () => resolve(),
       onError: () => reject(new Error(`The script "${url}" failed to load.`))
     })
-  })
-}
-
-function getDefaultPromiseImplementation() {
-  if (typeof Promise === 'undefined') {
-    throw new Error(
-      'Promise is undefined. To resolve the issue, use a Promise polyfill.'
-    )
-  }
-  return Promise
-}
-
-function getPayComWindowNamespace(namespace: string): PayComNamespace {
-  return (window as unknown as Record<string, PayComNamespace>)[namespace]
-}
-
-function validateArguments(options: unknown, PromisePonyfill?: unknown) {
-  if (typeof options !== 'object' || options === null) {
-    throw new Error('Expected an options object.')
-  }
-
-  if (
-    typeof PromisePonyfill !== 'undefined' &&
-    typeof PromisePonyfill !== 'function'
-  ) {
-    throw new Error('Expected PromisePonyfill to be a function.')
-  }
+  )
 }
 
 const com = async (
   options: PayComScriptOptions,
   PromisePonyfill: PromiseConstructor = getDefaultPromiseImplementation()
 ) => {
-  const Pay: PayComNamespace | null = await loadScript(options, PromisePonyfill)
-
-  if (!Pay) {
-    throw new Error('Wrong script URL provided')
-  }
+  const Pay = await loadScript(options, PromisePonyfill)
 
   return Pay.com(options)
 }

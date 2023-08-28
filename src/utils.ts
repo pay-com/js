@@ -1,21 +1,19 @@
 type StringMap = Record<string, string>
 
-export function findScript(
+export const findScript = (
   url: string,
   attributes?: StringMap
-): HTMLScriptElement | null {
+): HTMLScriptElement | null => {
   const currentScript = document.querySelector<HTMLScriptElement>(
     `script[src="${url}"]`
   )
-  if (currentScript === null) return null
+  if (!currentScript) return null
 
   const nextScript = createScriptElement(url, attributes)
 
-  // ignore the data-uid-auto attribute that gets auto-assigned to every script tag
   const currentScriptDataset = { ...currentScript.dataset }
   delete currentScriptDataset.uidAuto
 
-  // check if the new script has the same number of data attributes
   if (
     Object.keys(currentScriptDataset).length !==
     Object.keys(nextScript.dataset).length
@@ -23,14 +21,10 @@ export function findScript(
     return null
   }
 
-  let isExactMatch = true
-
-  // check if the data attribute values are the same
-  Object.keys(currentScriptDataset).forEach(key => {
-    if (currentScriptDataset[key] !== nextScript.dataset[key]) {
-      isExactMatch = false
-    }
-  })
+  const isExactMatch = Object.entries(currentScriptDataset).every(
+    ([key, currentDatasetValue]) =>
+      currentDatasetValue === nextScript.dataset[key]
+  )
 
   return isExactMatch ? currentScript : null
 }
@@ -39,23 +33,53 @@ export interface ScriptElement {
   url: string
   attributes?: StringMap
   onSuccess: () => void
-  onError: OnErrorEventHandler
+  onError: () => void
 }
 
-export function insertScriptElement({
+export const insertScriptElement = ({
   url,
   attributes,
   onSuccess,
   onError
-}: ScriptElement): void {
+}: ScriptElement): void => {
   const newScript = createScriptElement(url, attributes)
-  newScript.onerror = onError
-  newScript.onload = onSuccess
+
+  attachScriptListeners({
+    script: newScript,
+    onSuccess,
+    onError
+  })
 
   document.head.insertBefore(newScript, document.head.firstElementChild)
 }
 
-export function objectToQueryString(params: StringMap): string {
+export const getDefaultPromiseImplementation = () => {
+  if (typeof Promise === 'undefined') {
+    throw new Error(
+      'Promise is undefined. To resolve the issue, use a Promise polyfill.'
+    )
+  }
+
+  return Promise
+}
+
+export const validateArguments = (
+  options: unknown,
+  PromisePonyfill?: unknown
+) => {
+  if (typeof options !== 'object' || options === null) {
+    throw new Error('Expected an options object.')
+  }
+
+  if (
+    typeof PromisePonyfill !== 'undefined' &&
+    typeof PromisePonyfill !== 'function'
+  ) {
+    throw new Error('Expected PromisePonyfill to be a function.')
+  }
+}
+
+export const objectToQueryString = (params: StringMap): string => {
   let queryString = ''
 
   Object.keys(params).forEach(key => {
@@ -65,10 +89,25 @@ export function objectToQueryString(params: StringMap): string {
   return queryString
 }
 
-function createScriptElement(
+export interface AttachScriptListenersI {
+  script: HTMLScriptElement
+  onSuccess: () => void
+  onError: () => void
+}
+
+export const attachScriptListeners = ({
+  script,
+  onSuccess,
+  onError
+}: AttachScriptListenersI) => {
+  script.addEventListener('load', onSuccess, false)
+  script.addEventListener('error', onError, false)
+}
+
+const createScriptElement = (
   url: string,
   attributes: StringMap = {}
-): HTMLScriptElement {
+): HTMLScriptElement => {
   const newScript: HTMLScriptElement = document.createElement('script')
   newScript.src = url
 
