@@ -441,7 +441,7 @@ declare module '@pay-com/js' {
   export function loadScript(
     options: PayComScriptOptions,
     PromisePonyfill?: PromiseConstructor
-  ): Promise<PayComNamespace | null>
+  ): Promise<PayComNamespace>
 
   export function loadCustomScript(options: {
     url: string

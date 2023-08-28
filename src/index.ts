@@ -123,11 +123,7 @@ const com = async (
   options: PayComScriptOptions,
   PromisePonyfill: PromiseConstructor = getDefaultPromiseImplementation()
 ) => {
-  const Pay: PayComNamespace | null = await loadScript(options, PromisePonyfill)
-
-  if (!Pay) {
-    throw new Error('Wrong script URL provided')
-  }
+  const Pay = await loadScript(options, PromisePonyfill)
 
   return Pay.com(options)
 }
