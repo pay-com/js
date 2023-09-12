@@ -258,6 +258,7 @@ export interface CheckoutOpts {
   token?: string | (() => Promise<string>)
   clientSecret?: string | (() => Promise<string>)
   currency?: string
+  amount?: string
   onSuccess?: (payment: Record<string, unknown>) => void
   onFailure?: (error: FailureError) => void
   mode?: modeOpts
