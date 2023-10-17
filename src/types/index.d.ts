@@ -397,7 +397,8 @@ export type UpdateTransactionDetailsOpts = {
     city: string
     state?: string
     countryAlpha2: string
-  }
+  },
+  customFieldsValues: Record<string, string | number | boolean>
 }
 
 export type PayOpts = {
