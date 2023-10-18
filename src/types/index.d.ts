@@ -251,6 +251,36 @@ export type FailureError = {
   data?: Record<string, unknown>
 }
 
+export type Locale =
+  | 'en-US'
+  | 'en-GB'
+  | 'ro-RO'
+  | 'zh-CN'
+  | 'cs-CZ'
+  | 'da-DK'
+  | 'nl-NL'
+  | 'de-DE'
+  | 'fr-FR'
+  | 'fi-FI'
+  | 'el-GR'
+  | 'hu-HU'
+  | 'id-ID'
+  | 'it-IT'
+  | 'ja-JP'
+  | 'ko-KR'
+  | 'ko-KP'
+  | 'nb-NO'
+  | 'pl-PL'
+  | 'pt-PT'
+  | 'pt-BR'
+  | 'ru-RU'
+  | 'es-ES'
+  | 'se-SE'
+  | 'se-FI'
+  | 'se-NO'
+  | 'tr-TR'
+  | 'vi-VN'
+
 export interface CheckoutOpts {
   /**
    * @deprecated Got replaced by clientSecret
@@ -273,7 +303,7 @@ export interface CheckoutOpts {
     displayEndOfSessionFailureMessages?: boolean
     disableAdditionalFields?: boolean
   }
-  locale?: string
+  locale?: Locale
 }
 
 interface PayComI {
