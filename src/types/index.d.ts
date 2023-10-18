@@ -273,6 +273,7 @@ export interface CheckoutOpts {
     displayEndOfSessionFailureMessages?: boolean
     disableAdditionalFields?: boolean
   }
+  locale?: string
 }
 
 interface PayComI {
@@ -397,7 +398,7 @@ export type UpdateTransactionDetailsOpts = {
     city: string
     state?: string
     countryAlpha2: string
-  },
+  }
   customFieldsValues: Record<string, string | number | boolean>
 }
 
