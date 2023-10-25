@@ -251,6 +251,8 @@ export type FailureError = {
   data?: Record<string, unknown>
 }
 
+export type Mode = 'integrated' | 'modal'
+
 export type Locale =
   | 'en-US'
   | 'en-GB'
@@ -291,7 +293,7 @@ export interface CheckoutOpts {
   amount?: string
   onSuccess?: (payment: Record<string, unknown>) => void
   onFailure?: (error: FailureError) => void
-  mode?: modeOpts
+  mode?: Mode
   throwOnSubmitFailure?: boolean
   paymentFailurePopupConfig?: {
     sessionExpiredPopupText?: string
