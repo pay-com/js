@@ -146,6 +146,11 @@ export interface UniversalToggles {
    * A title to display above the Universal form.
    */
   title?: string
+
+  /**
+   * If false, the form will render without the save for future usage checkbox.
+   */
+  disableSetupFutureUsageCheckbox?: boolean
 }
 
 export type LanguageLocalizationOverride = {
@@ -436,6 +441,7 @@ export type UpdateTransactionDetailsOpts = {
 
 export type PayOpts = {
   source: string
+  cvv?: string
 }
 
 export type PayFn = (Opts: PayOpts) => Promise<unknown>
