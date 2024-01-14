@@ -305,6 +305,7 @@ export interface CheckoutOpts {
     displayEndOfSessionFailureMessages?: boolean
     disableAdditionalFields?: boolean
     whiteLabel?: boolean
+    disableSetupFutureUsageCheckbox?: boolean
   }
   locale?: Locale
 }
@@ -352,6 +353,7 @@ export enum ELEMENT_TYPES {
   CHECKOUT = 'checkout',
   UNIVERSAL = 'universal',
   PAYPAL = 'paypal'
+  // UNIVERSAL_V2 = 'universal-v2'
 }
 
 enum TransactionStatusEnum {
@@ -432,7 +434,7 @@ export type UpdateTransactionDetailsOpts = {
     state?: string
     countryAlpha2: string
   }
-  customFieldsValues: Record<string, string | number | boolean>
+  customFieldsValues?: Record<string, string | number | boolean>
 }
 
 export type PayOpts = {
@@ -461,6 +463,7 @@ export type CheckoutObject = {
   validate: ValidateFn
   reset: ResetFn
   pay: PayFn
+  // universalV2: UniversalFn
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
