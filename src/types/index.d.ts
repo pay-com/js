@@ -450,16 +450,6 @@ export type UpdateTransactionDetailsFn = (
 
 export type ResyncFn = () => Promise<void>
 
-export type HeadlessMethod = 'card' | 'googlepay' | 'applepay'
-
-export type HeadlessCardData = {
-  number: string
-  cvv: string
-  expirationMonth: string
-  expirationYear: string
-  name?: string
-}
-
 export type AddressType = {
   line1: string
   line2?: string
@@ -469,9 +459,9 @@ export type AddressType = {
   postalCode: string
 }
 
-export type HeadlessFn = <M extends HeadlessMethod>(
-  method: M,
-  paymentMethodData?: M extends 'card' ? HeadlessCardData : unknown,
+export type HeadlessFn = (
+  method: string,
+  paymentMethodData?: unknown,
   billingDetails?: AddressType
 ) => Promise<unknown>
 
