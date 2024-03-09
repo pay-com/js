@@ -448,6 +448,33 @@ export type UpdateTransactionDetailsFn = (
   config: UpdateTransactionDetailsOpts
 ) => Promise<unknown>
 
+export type ResyncFn = () => Promise<void>
+
+export type HeadlessMethod = 'card' | 'googlepay' | 'applepay'
+
+export type HeadlessCardData = {
+  number: string
+  cvv: string
+  expirationMonth: string
+  expirationYear: string
+  name?: string
+}
+
+export type AddressType = {
+  line1: string
+  line2?: string
+  city: string
+  state?: string
+  country: string
+  postalCode: string
+}
+
+export type HeadlessFn = <M extends HeadlessMethod>(
+  method: M,
+  paymentMethodData?: M extends 'card' ? HeadlessCardData : unknown,
+  billingDetails?: AddressType
+) => Promise<unknown>
+
 export type CheckoutObject = {
   on: ListenerFn
   once: ListenerFn
@@ -463,7 +490,9 @@ export type CheckoutObject = {
   validate: ValidateFn
   reset: ResetFn
   pay: PayFn
+  resync: ResyncFn
   // universalV2: UniversalFn
+  headless: HeadlessFn
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
