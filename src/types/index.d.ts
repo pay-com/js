@@ -146,6 +146,18 @@ export interface UniversalToggles {
    * A title to display above the Universal form.
    */
   title?: string
+
+  /**
+   * If true, alternative payment methods will always display above without needing to expand
+   * @default false
+   */
+  alternativesAlwaysDisplay?: boolean
+
+  /**
+   * If false, alternative payment methods will all be laid out with needing to press the 'show more' button
+   * @default true
+   */
+  alternativesUseShowMoreButton?: boolean
 }
 
 export type LanguageLocalizationOverride = {
@@ -240,6 +252,7 @@ export interface UniversalOpts {
     }
   }
   paymentMethods?: Array<string>
+  alternatives?: 'button' | 'radio'
 }
 
 export interface SubmitOpts {
@@ -301,11 +314,12 @@ export interface CheckoutOpts {
     style?: PayCssConfig
   }
   toggles?: {
-    displayFailureMessages: boolean
+    displayFailureMessages?: boolean
     displayEndOfSessionFailureMessages?: boolean
     disableAdditionalFields?: boolean
     whiteLabel?: boolean
     disableSetupFutureUsageCheckbox?: boolean
+    redirectToAuthenticationSession?: boolean
   }
   locale?: Locale
 }
