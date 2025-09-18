@@ -131,6 +131,12 @@ export interface UniversalToggles {
   submitButton?: boolean
 
   /**
+   * If false, the default suppoerted brands footer will not appear.
+   * @default true
+   */
+  withCardBrandsFooterLogos?: boolean
+
+  /**
    * If true, displays the card bin as well as last 4.
    * @default false
    */
@@ -146,6 +152,30 @@ export interface UniversalToggles {
    * A title to display above the Universal form.
    */
   title?: string
+
+  /**
+   * If true, only user's saved sources will displayed.
+   * @default false
+   */
+  allowOnlyExistingPaymentMethods?: boolean
+
+  /**
+   * If true, user will not be able the pay with saved source.
+   * @default false
+   */
+  newCardOnly?: boolean
+
+  /**
+   * If true, user will not be able to remove saved source.
+   * @default false
+   */
+  disablePaymentMethodDeletion?: boolean
+
+  /**
+   * If true, the submit button will be disabled while form invalid.
+   * @default false
+   */
+  disableSubmitUntilFormIsValid?: boolean
 }
 
 export type LanguageLocalizationOverride = {
@@ -201,6 +231,7 @@ export interface UniversalOpts {
   container: string
   cardForm?: Omit<RenderOpts, 'container' | 'style'>
   toggles?: UniversalToggles
+  selectedPaymentMethod?: string
   apmsOnClickValidation?: () => Promise<boolean>
   localizations?: {
     [language: string]: LanguageLocalizationOverride
@@ -238,8 +269,10 @@ export interface UniversalOpts {
         }
       }
     }
+    ctp?: CTPStyles
   }
   paymentMethods?: Array<string>
+  alternatives?: 'button' | 'radio'
 }
 
 export interface SubmitOpts {
@@ -335,7 +368,11 @@ export enum EVENT_TYPES {
   PAYMENT_PROCESSING = 'payment_processing',
   SETUP_PROCESSING = 'setup_processing',
   SESSION_EXPIRED = 'session_expired',
-  MAX_ATTEMPTS_REACHED = 'max_attempts_reached'
+  MAX_ATTEMPTS_REACHED = 'max_attempts_reached',
+  PAYMENT_PENDING_APPROVAL = 'payment_pending_approval',
+  SET_DISABLE_UI = 'set_disable_ui',
+  HEADLESS_READY = 'headless_ready',
+  FORM_VALIDATION_UPDATED = 'form_validation_update'
 }
 
 export type ListenerFn = (
@@ -415,6 +452,7 @@ export type UpdateTransactionDetailsOpts = {
   consumer?: {
     firstName?: string
     lastName?: string
+    name?: string
     email?: string
     phone?: string
   }
@@ -465,24 +503,79 @@ export type HeadlessFn = (
   billingDetails?: AddressType
 ) => Promise<unknown>
 
+export type CanMakePaymentsFn = () => Promise<unknown>
+
+export type InitHeadlessCtpParams = {
+  emailInputRef?: HTMLDivElement | string
+  email: string
+  containers: {
+    mainWidget: HTMLDivElement | string
+    linkNewCard: HTMLDivElement | string
+  }
+  style?: CTPStyles
+}
+
+export type CTPStyles = Partial<{
+  mainWidgetContainer: PayCssConfig
+  linkNewCardContainer: PayCssConfig
+}>
+
+export enum CTP_EVENTS {
+  VALIDATION_CHANGED = 'validation-changed',
+  AUTHENTICATED = 'authenticated'
+}
+
+export declare enum CtpCompletePaymentStatus {
+  success = 'SUCCESS',
+  declined = 'DECLINED'
+}
+
+export type CheckoutCTPBillingDetails = {
+  address: {
+    addressLine: string
+    addressLine2?: string
+    zip: string
+    city: string
+    state?: string
+    countryAlpha2: string
+  }
+  name: string
+  phone: string
+}
+
+export type HeadlessCtpObject = {
+  on: Listener<CTP_EVENTS>
+  once: Listener<CTP_EVENTS>
+  removeListener: Listener<CTP_EVENTS>
+  validate: () => Promise<{ valid: boolean }>
+  completePayment: (status: CtpCompletePaymentStatus) => Promise<void>
+  updateBillingDetails: (
+    params: Partial<CheckoutCTPBillingDetails>
+  ) => Promise<void>
+  STATUS_SUCCESS: CtpCompletePaymentStatus.success
+  STATUS_DECLINED: CtpCompletePaymentStatus.declined
+}
+
 export type CheckoutObject = {
   on: ListenerFn
   once: ListenerFn
   removeListener: ListenerFn
   EVENT_TYPES: typeof EVENT_TYPES
+  ELEMENT_TYPES: typeof ELEMENT_TYPES
   render: RenderFn
   paypal: PaypalFn
   universal: UniversalFn
+  blur: BlurFn
   update: UpdateFn
   updateTransactionDetails: UpdateTransactionDetailsFn
   submit: SubmitFn
-  blur: BlurFn
+  resync: ResyncFn
+  canMakePayments: CanMakePaymentsFn
   validate: ValidateFn
   reset: ResetFn
   pay: PayFn
-  resync: ResyncFn
-  // universalV2: UniversalFn
   headless: HeadlessFn
+  ctp: (params: InitHeadlessCtpParams) => Promise<HeadlessCtpObject>
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
