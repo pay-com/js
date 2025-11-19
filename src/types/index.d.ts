@@ -594,33 +594,24 @@ export type PaymentMethod = {
 }
 
 export type ExistingCard = {
-  name: string
-  expiryMonth: string
-  expiryYear: string
   bin: string
-  lastFourDigits: string
-  brand: 'Visa' | 'Mastercard' | 'Amex' | 'Discover'
-  imgSrc?: string
-  cvvExists?: boolean
+  brand: 'visa' | 'mastercard' | 'amex' | 'discover'
+  cardholderCurrency: string
+  country: string
+  issuerName: string
+  expMonth: string
+  expYear: string
+  last4: string
+  fingerprint: string
+  funding: 'prepaid' | 'debit' | 'credit'
+  network: 'visa' | 'mastercard' | 'amex' | 'discover'
+  payout: string
 }
 
 export type ExistingSource = {
   id: string
   type: string
-  card?: {
-    bin: string
-    brand: 'visa' | 'mastercard' | 'amex' | 'discover'
-    cardholderCurrency: string
-    country: string
-    issuerName: string
-    expMonth: string
-    expYear: string
-    last4: string
-    fingerprint: string
-    funding: 'prepaid' | 'debit' | 'credit'
-    network: 'visa' | 'mastercard' | 'amex' | 'discover'
-    payout: string
-  }
+  card?: ExistingCard
 }
 
 export type CheckoutObject = {
