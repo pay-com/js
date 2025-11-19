@@ -590,9 +590,17 @@ export type PaymentMethod = {
   fields?: CustomField[]
 }
 
+export type CardBrand =
+  | 'visa'
+  | 'mastercard'
+  | 'amex'
+  | 'discover'
+  | 'jcl'
+  | 'unionpay'
+
 export type ExistingCard = {
   bin: string
-  brand: 'visa' | 'mastercard' | 'amex' | 'discover'
+  brand: CardBrand
   cardholderCurrency: string
   country: string
   issuerName: string
@@ -600,8 +608,8 @@ export type ExistingCard = {
   expYear: string
   last4: string
   fingerprint: string
-  funding: 'prepaid' | 'debit' | 'credit'
-  network: 'visa' | 'mastercard' | 'amex' | 'discover'
+  funding: 'prepaid' | 'debit' | 'credit' | 'charge'
+  network: CardBrand
   payout: string
 }
 
