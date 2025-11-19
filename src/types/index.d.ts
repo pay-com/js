@@ -556,6 +556,61 @@ export type HeadlessCtpObject = {
   STATUS_DECLINED: CtpCompletePaymentStatus.declined
 }
 
+export type CustomFieldType = 'input' | 'date' | 'checkbox' | 'radio' | 'select'
+
+export type CustomFieldsOptions = {
+  label: string
+  value: string
+}
+
+export type CustomField = {
+  id: string
+  placeholder?: string
+  label?: string
+  type?: CustomFieldType
+  inputType?: string
+  options?: CustomFieldsOptions[]
+  description?: string
+  validation?: CustomFieldsValidation
+}
+
+export type CustomFieldsValidation = {
+  required?: boolean
+  max?: number
+  min?: number
+  maxLength?: number
+  minLength?: number
+  pattern?: string
+}
+
+export type PaymentMethod = {
+  paymentMethodType: string
+  name: string
+  redirect?: boolean
+  fields?: CustomField[]
+}
+
+export type ExistingCard = {
+  bin: string
+  brand: 'visa' | 'mastercard' | 'amex' | 'discover'
+  cardholderCurrency: string
+  country: string
+  issuerName: string
+  expMonth: string
+  expYear: string
+  last4: string
+  fingerprint: string
+  funding: 'prepaid' | 'debit' | 'credit'
+  network: 'visa' | 'mastercard' | 'amex' | 'discover'
+  payout: string
+}
+
+export type ExistingSource = {
+  id: string
+  type: string
+  card?: ExistingCard
+}
+
 export type CheckoutObject = {
   on: ListenerFn
   once: ListenerFn
@@ -576,6 +631,8 @@ export type CheckoutObject = {
   pay: PayFn
   headless: HeadlessFn
   ctp: (params: InitHeadlessCtpParams) => Promise<HeadlessCtpObject>
+  getPaymentMethods: () => Promise<PaymentMethod[]>
+  getExistingSources: () => Promise<ExistingSource[]>
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
