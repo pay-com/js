@@ -607,7 +607,20 @@ export type ExistingCard = {
 export type ExistingSource = {
   id: string
   type: string
-  card?: ExistingCard
+  card?: {
+    bin: string
+    brand: 'visa' | 'mastercard' | 'amex' | 'discover'
+    cardholderCurrency: string
+    country: string
+    issuerName: string
+    expMonth: string
+    expYear: string
+    last4: string
+    fingerprint: string
+    funding: 'prepaid' | 'debit' | 'credit'
+    network: 'visa' | 'mastercard' | 'amex' | 'discover'
+    payout: string
+  }
 }
 
 export type CheckoutObject = {
