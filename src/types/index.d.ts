@@ -13,6 +13,7 @@ interface InitData {
   sandbox: boolean
   debug: boolean
 }
+
 interface CheckoutStyles {
   base?: PayCssConfig
   number?: PayCssConfig
@@ -222,6 +223,7 @@ export interface DividerStyles {
 }
 
 export type ExpandablePaymentMethods = 'upi' | 'netbanking'
+
 export interface ApmStyle {
   divider?: DividerStyles
   input?: PayCssConfig
@@ -439,6 +441,7 @@ interface UpdateOpts {
   amount: number
   currency?: string
 }
+
 type UpdateFn = (updateOpts: UpdateOpts) => Promise<void>
 
 type ValidateFn = (
@@ -556,6 +559,57 @@ export type HeadlessCtpObject = {
   STATUS_DECLINED: CtpCompletePaymentStatus.declined
 }
 
+export type CustomFieldType = 'input' | 'date' | 'checkbox' | 'radio' | 'select'
+
+export type CustomFieldsOptions = {
+  label: string
+  value: string
+}
+
+export type CustomField = {
+  id: string
+  placeholder?: string
+  label?: string
+  type?: CustomFieldType
+  inputType?: string
+  options?: CustomFieldsOptions[]
+  description?: string
+  validation?: CustomFieldsValidation
+}
+
+export type CustomFieldsValidation = {
+  required?: boolean
+  max?: number
+  min?: number
+  maxLength?: number
+  minLength?: number
+  pattern?: string
+}
+
+export type PaymentMethod = {
+  paymentMethodType: string
+  name: string
+  redirect?: boolean
+  fields?: CustomField[]
+}
+
+export type ExistingCard = {
+  name: string
+  expiryMonth: string
+  expiryYear: string
+  bin: string
+  lastFourDigits: string
+  brand: 'Visa' | 'Mastercard' | 'Amex' | 'Discover'
+  imgSrc?: string
+  cvvExists?: boolean
+}
+
+export type ExistingSource = {
+  id: string
+  type: string
+  card?: ExistingCard
+}
+
 export type CheckoutObject = {
   on: ListenerFn
   once: ListenerFn
@@ -576,6 +630,8 @@ export type CheckoutObject = {
   pay: PayFn
   headless: HeadlessFn
   ctp: (params: InitHeadlessCtpParams) => Promise<HeadlessCtpObject>
+  getPaymentMethods: () => Promise<PaymentMethod[]>
+  getExistingSources: () => Promise<ExistingSource[]>
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
