@@ -227,6 +227,28 @@ export interface ApmStyle {
   input?: PayCssConfig
 }
 
+type JssObject = {
+  [K in keyof PayCssConfig]?: PayCssConfig[K]
+} & {
+  [selector: `& ${string}`]: JssObject | string | number | undefined
+}
+
+type CheckboxStyleOverrides = {
+  ':selected'?: CSS.Properties
+} & CSS.Properties
+
+export type DynamicFieldStyles = {
+  label?: CSS.Properties
+  input?: CSS.Properties
+  date?: CSS.Properties
+  select?: JssObject
+  radio?: {
+    color?: CSS.Properties['color']
+    label?: CSS.Properties
+  }
+  checkbox?: CheckboxStyleOverrides
+}
+
 export interface UniversalOpts {
   container: string
   cardForm?: Omit<RenderOpts, 'container' | 'style'>
@@ -270,6 +292,7 @@ export interface UniversalOpts {
       }
     }
     ctp?: CTPStyles
+    paymentMethodFields?: DynamicFieldStyles
   }
   paymentMethods?: Array<string>
   alternatives?: 'button' | 'radio'
