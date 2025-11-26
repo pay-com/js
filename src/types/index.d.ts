@@ -583,13 +583,6 @@ export type CustomFieldsValidation = {
   pattern?: string
 }
 
-export type PaymentMethod = {
-  paymentMethodType: string
-  name: string
-  redirect?: boolean
-  fields?: CustomField[]
-}
-
 export type CardBrand =
   | 'visa'
   | 'mastercard'
@@ -597,6 +590,14 @@ export type CardBrand =
   | 'discover'
   | 'jcl'
   | 'unionpay'
+
+export type PaymentMethod = {
+  paymentMethodType: string
+  name: string
+  redirect?: boolean
+  fields?: CustomField[]
+  supportedCardBrands?: CardBrand[]
+}
 
 export type ExistingCard = {
   bin: string
