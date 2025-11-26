@@ -520,10 +520,15 @@ export type AddressType = {
   postalCode: string
 }
 
+export type HeadlessPaymentOptions = {
+  saveSourceForFutureUse?: boolean
+}
+
 export type HeadlessFn = (
   method: string,
   paymentMethodData?: unknown,
-  billingDetails?: AddressType
+  billingDetails?: AddressType,
+  options?: HeadlessPaymentOptions
 ) => Promise<unknown>
 
 export type CanMakePaymentsFn = () => Promise<unknown>
