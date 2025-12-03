@@ -107,9 +107,29 @@ export interface CheckoutToggles {
   withCvvTooltip?: boolean
 }
 
+/**
+ * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.
+ */
+type PaypalButtonStyle = {
+  color?: 'gold' | 'blue' | 'silver' | 'white' | 'black'
+  height?: number
+  label?:
+    | 'paypal'
+    | 'checkout'
+    | 'buynow'
+    | 'pay'
+    | 'installment'
+    | 'subscribe'
+    | 'donate'
+  layout?: 'vertical' | 'horizontal'
+  shape?: 'rect' | 'pill'
+  tagline?: boolean
+}
+
 export interface PaypalOpts {
   container: string
-  onClickValidation: () => Promise<boolean>
+  onClickValidation?: () => Promise<boolean>
+  style?: PaypalButtonStyle
 }
 
 export interface RenderOpts {
