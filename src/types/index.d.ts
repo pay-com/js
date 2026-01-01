@@ -542,6 +542,7 @@ export type AddressType = {
 
 export type HeadlessPaymentOptions = {
   saveSourceForFutureUse?: boolean
+  onValidateSession?: () => Promise<boolean>
 }
 
 export type HeadlessFn = (
