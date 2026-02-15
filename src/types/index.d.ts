@@ -556,10 +556,10 @@ export type CanMakePaymentsFn = () => Promise<unknown>
 
 export type InitHeadlessCtpParams = {
   emailInputRef?: HTMLDivElement | string
-  email: string
+  email?: string
   containers: {
     mainWidget: HTMLDivElement | string
-    linkNewCard: HTMLDivElement | string
+    linkNewCard?: HTMLDivElement | string
   }
   style?: CTPStyles
 }
