@@ -163,6 +163,11 @@ export interface UniversalToggles {
   savedCardsBins?: boolean | 2 | 3 | 4 | 5 | 6
 
   /**
+   * Maximum amount of saved cards to display before hiding the new card form.
+   */
+  maxSavedCards?: number
+
+  /**
    * If true, the CVV in saved payment method will be inline
    * @default false
    */
