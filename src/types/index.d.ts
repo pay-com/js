@@ -562,6 +562,10 @@ export type InitHeadlessCtpParams = {
     linkNewCard?: HTMLDivElement | string
   }
   style?: CTPStyles
+  toggles?: {
+    openOTPFrameOnInit?: boolean
+    showOnlyForRecognizedUsers?: boolean
+  }
 }
 
 export type CTPStyles = Partial<{
