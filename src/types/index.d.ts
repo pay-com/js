@@ -369,6 +369,7 @@ export interface CheckoutOpts {
   amount?: string
   onSuccess?: (payment: Record<string, unknown>) => void
   onFailure?: (error: FailureError) => void
+  onPending?: (payment: Record<string, unknown>) => void
   mode?: Mode
   throwOnSubmitFailure?: boolean
   paymentFailurePopupConfig?: {
@@ -412,6 +413,7 @@ export enum EVENT_TYPES {
   SETUP_PROCESSING = 'setup_processing',
   SESSION_EXPIRED = 'session_expired',
   MAX_ATTEMPTS_REACHED = 'max_attempts_reached',
+  PAYMENT_PENDING = 'payment_pending',
   PAYMENT_PENDING_APPROVAL = 'payment_pending_approval',
   SET_DISABLE_UI = 'set_disable_ui',
   HEADLESS_READY = 'headless_ready',
