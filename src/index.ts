@@ -3,6 +3,7 @@ import {
   findScript,
   getDefaultPromiseImplementation,
   insertScriptElement,
+  removeScript,
   validateArguments
 } from './utils'
 import {
@@ -34,22 +35,12 @@ import {
 } from './types'
 import { PayComScriptOptions } from './types/script-options'
 
-const loadScript = (
-  options: PayComScriptOptions,
+const MAX_RETRIES = 3
+
+const attemptLoadScript = (
+  jsUrl: string,
   PromisePonyfill: PromiseConstructor
 ): Promise<PayComNamespace> => {
-  validateArguments(options, PromisePonyfill)
-
-  const { live, sdkUrlOverride } = options
-
-  let jsUrl = live
-    ? 'https://js.pay.com/v1.js'
-    : 'https://js.staging.pay.com/v1.js'
-
-  if (sdkUrlOverride) {
-    jsUrl = sdkUrlOverride
-  }
-
   const existingWindowNamespace = window.Pay
 
   const currentScript = findScript(jsUrl)
@@ -88,6 +79,40 @@ const loadScript = (
 
     throw new Error(`The window.Pay global variable is not available.`)
   })
+}
+
+const loadScript = (
+  options: PayComScriptOptions,
+  PromisePonyfill: PromiseConstructor
+): Promise<PayComNamespace> => {
+  validateArguments(options, PromisePonyfill)
+
+  const { live, sdkUrlOverride } = options
+
+  let jsUrl = live
+    ? 'https://js.pay.com/v1.js'
+    : 'https://js.staging.pay.com/v1.js'
+
+  if (sdkUrlOverride) {
+    jsUrl = sdkUrlOverride
+  }
+
+  let attempt = 0
+
+  const tryLoad = (): Promise<PayComNamespace> => {
+    attempt += 1
+    return attemptLoadScript(jsUrl, PromisePonyfill).catch(error => {
+      removeScript(jsUrl)
+
+      if (attempt < MAX_RETRIES) {
+        return tryLoad()
+      }
+
+      throw error
+    })
+  }
+
+  return tryLoad()
 }
 
 const loadCustomScript = (

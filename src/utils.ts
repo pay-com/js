@@ -29,6 +29,15 @@ export const findScript = (
   return isExactMatch ? currentScript : null
 }
 
+export const removeScript = (url: string): void => {
+  const script = document.querySelector<HTMLScriptElement>(
+    `script[src="${url}"]`
+  )
+  if (script) {
+    script.remove()
+  }
+}
+
 export interface ScriptElement {
   url: string
   attributes?: StringMap
