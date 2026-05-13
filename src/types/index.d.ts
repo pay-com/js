@@ -13,6 +13,7 @@ interface InitData {
   sandbox: boolean
   debug: boolean
 }
+
 interface CheckoutStyles {
   base?: PayCssConfig
   number?: PayCssConfig
@@ -242,6 +243,7 @@ export interface DividerStyles {
 }
 
 export type ExpandablePaymentMethods = 'upi' | 'netbanking'
+
 export interface ApmStyle {
   divider?: DividerStyles
   input?: PayCssConfig
@@ -484,6 +486,7 @@ interface UpdateOpts {
   amount: number
   currency?: string
 }
+
 type UpdateFn = (updateOpts: UpdateOpts) => Promise<void>
 
 type ValidateFn = (
@@ -665,10 +668,27 @@ export type ExistingCard = {
   payout: string
 }
 
+export type ExistingBankAccount = {
+  country: string
+  last4: string
+  fingerprint: string
+  source: string
+  currency: string
+  accountHolderName?: string
+  accountHolderType?: string
+  accountType?: string
+  bankName?: string
+  routingNumber?: string
+  swiftBic?: string
+  sortCode?: string
+  details?: Record<string, string>
+}
+
 export type ExistingSource = {
   id: string
   type: string
   card?: ExistingCard
+  bank_account?: ExistingBankAccount
 }
 
 export type CheckoutObject = {
