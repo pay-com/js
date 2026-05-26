@@ -666,6 +666,7 @@ export type ExistingCard = {
   funding: 'prepaid' | 'debit' | 'credit' | 'charge'
   network: CardBrand
   payout: string
+  cvvExists?: boolean
 }
 
 export type ExistingBankAccount = {
@@ -713,6 +714,8 @@ export type CheckoutObject = {
   ctp: (params: InitHeadlessCtpParams) => Promise<HeadlessCtpObject>
   getPaymentMethods: () => Promise<PaymentMethod[]>
   getExistingSources: () => Promise<ExistingSource[]>
+  getPayoutSources: () => Promise<ExistingSource[]>
+  refreshClientSecret: (clientSecret: string) => Promise<void>
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
