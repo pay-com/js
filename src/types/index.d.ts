@@ -277,6 +277,10 @@ export interface UniversalOpts {
   toggles?: UniversalToggles
   selectedPaymentMethod?: string
   apmsOnClickValidation?: () => Promise<boolean>
+  onValidateSession?: (data: {
+    paymentMethodType: string
+    fundingType?: CardFunding
+  }) => Promise<boolean>
   localizations?: {
     [language: string]: LanguageLocalizationOverride
   }
@@ -653,6 +657,8 @@ export type PaymentMethod = {
   supportedCardBrands?: CardBrand[]
 }
 
+export type CardFunding = 'prepaid' | 'debit' | 'credit' | 'charge'
+
 export type ExistingCard = {
   bin: string
   brand: CardBrand
@@ -663,7 +669,7 @@ export type ExistingCard = {
   expYear: string
   last4: string
   fingerprint: string
-  funding: 'prepaid' | 'debit' | 'credit' | 'charge'
+  funding: CardFunding
   network: CardBrand
   payout: string
   cvvExists?: boolean
