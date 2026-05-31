@@ -423,7 +423,8 @@ export enum EVENT_TYPES {
   PAYMENT_PENDING_APPROVAL = 'payment_pending_approval',
   SET_DISABLE_UI = 'set_disable_ui',
   HEADLESS_READY = 'headless_ready',
-  FORM_VALIDATION_UPDATED = 'form_validation_update'
+  FORM_VALIDATION_UPDATED = 'form_validation_update',
+  CARD_FUNDING_TYPE_UPDATE = 'card_funding_type_update'
 }
 
 export type ListenerFn = (
