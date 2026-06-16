@@ -106,6 +106,11 @@ export interface CheckoutToggles {
    * @default false
    */
   withCvvTooltip?: boolean
+  /**
+   * If true, will use payout-able existing sources
+   * @default false
+   */
+  payout?: boolean
 }
 
 /**
