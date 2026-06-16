@@ -398,6 +398,11 @@ export interface CheckoutOpts {
     disableSetupFutureUsageCheckbox?: boolean
   }
   locale?: Locale
+  /**
+   * If true, will use payout-able existing sources
+   * @default false
+   */
+  payout?: boolean
 }
 
 interface PayComI {
