@@ -271,16 +271,18 @@ export type DynamicFieldStyles = {
   checkbox?: CheckboxStyleOverrides
 }
 
+type OnValidateSessionFn = (data: {
+  paymentMethodType: string
+  fundingType?: CardFunding
+}) => Promise<boolean>
+
 export interface UniversalOpts {
   container: string
   cardForm?: Omit<RenderOpts, 'container' | 'style'>
   toggles?: UniversalToggles
   selectedPaymentMethod?: string
   apmsOnClickValidation?: () => Promise<boolean>
-  onValidateSession?: (data: {
-    paymentMethodType: string
-    fundingType?: CardFunding
-  }) => Promise<boolean>
+  onValidateSession?: onValidateSessionFn
   localizations?: {
     [language: string]: LanguageLocalizationOverride
   }
@@ -552,7 +554,7 @@ export type AddressType = {
 
 export type HeadlessPaymentOptions = {
   saveSourceForFutureUse?: boolean
-  onValidateSession?: () => Promise<boolean>
+  onValidateSession?: OnValidateSessionFn
 }
 
 export type HeadlessFn = (
@@ -703,6 +705,46 @@ export type ExistingSource = {
   bank_account?: ExistingBankAccount
 }
 
+export interface CvvToggles {
+  /**
+   * If false, the form will render without a submission button.
+   * @default true
+   */
+  submitButton?: boolean
+  /**
+   * If true, will render a tooltip on the CVV input
+   * @default false
+   */
+  withCvvTooltip?: boolean
+}
+
+export interface CvvOpts {
+  container: string
+  /**
+   * The saved source (token or id) to collect the CVV for.
+   * The rendered form is bound to this source only.
+   */
+  token: string
+  toggles?: CvvToggles
+  onValidateSession?: OnValidateSessionFn
+  style?: {
+    base?: PayCssConfig
+    cvv?: {
+      style?: PayCssConfig
+      labelStyle?: PayCssConfig
+      errorMessage?: PayCssConfig
+    }
+    submit?: PayCssConfig
+    existingSource?: PayCssConfig
+  }
+}
+
+export type CvvObject = {
+  setDisabled: (disabled: boolean) => void
+}
+
+export type CvvFn = (cvvOpts: CvvOpts) => CvvObject
+
 export type CheckoutObject = {
   on: ListenerFn
   once: ListenerFn
@@ -722,6 +764,7 @@ export type CheckoutObject = {
   reset: ResetFn
   pay: PayFn
   headless: HeadlessFn
+  cvv: CvvFn
   ctp: (params: InitHeadlessCtpParams) => Promise<HeadlessCtpObject>
   getPaymentMethods: () => Promise<PaymentMethod[]>
   getExistingSources: () => Promise<ExistingSource[]>
