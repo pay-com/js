@@ -197,6 +197,11 @@ export interface UniversalToggles {
    * @default false
    */
   disableSubmitUntilFormIsValid?: boolean
+  /**
+   * If true, shows a Debit/Credit/Prepaid funding-type tag on saved cards.
+   * @default false
+   */
+  savedCardsFundingType?: boolean
 }
 
 export type LanguageLocalizationOverride = {
