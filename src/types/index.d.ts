@@ -202,6 +202,11 @@ export interface UniversalToggles {
    * @default false
    */
   disableSubmitUntilFormIsValid?: boolean
+  /**
+   * If true, shows a Debit/Credit/Prepaid funding-type tag on saved cards.
+   * @default false
+   */
+  savedCardsFundingType?: boolean
 }
 
 export type LanguageLocalizationOverride = {
@@ -306,6 +311,7 @@ export interface UniversalOpts {
     }
     existingSource?: {
       deleteText?: PayCssConfig
+      fundingTag?: PayCssConfig
       cvv?: {
         style?: PayCssConfig
         labelStyle?: PayCssConfig
