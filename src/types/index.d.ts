@@ -311,6 +311,7 @@ export interface UniversalOpts {
     }
     existingSource?: {
       deleteText?: PayCssConfig
+      fundingTag?: PayCssConfig
       cvv?: {
         style?: PayCssConfig
         labelStyle?: PayCssConfig
