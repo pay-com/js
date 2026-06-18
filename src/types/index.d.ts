@@ -252,13 +252,6 @@ export interface DividerStyles {
   }
 }
 
-export type ExpandablePaymentMethods = 'upi' | 'netbanking'
-
-export interface ApmStyle {
-  divider?: DividerStyles
-  input?: PayCssConfig
-}
-
 type JssObject = {
   [K in keyof PayCssConfig]?: PayCssConfig[K]
 } & {
@@ -303,7 +296,6 @@ export interface UniversalOpts {
     savedPaymentMethods?: PayCssConfig
     expressCheckout?: PayCssConfig
     apmButtons?: PayCssConfig
-    apms?: Partial<Record<ExpandablePaymentMethods, ApmStyle>>
     dividers?: {
       showOtherWaysToPay?: DividerStyles
       payWith?: DividerStyles
