@@ -107,6 +107,12 @@ export interface CheckoutToggles {
    */
   withCvvTooltip?: boolean
   /**
+   * If true, displays a scan action in the Pay.com hosted card form. The SDK
+   * opens the camera in a separate, short-lived Pay.com scanner iframe.
+   * @default false
+   */
+  withCardScanner?: boolean
+  /**
    * If true, will use payout-able existing sources
    * @default false
    */
@@ -761,6 +767,71 @@ export type CvvObject = {
 
 export type CvvFn = (cvvOpts: CvvOpts) => CvvObject
 
+export type CardScanInputTarget = string | HTMLInputElement
+
+export type CardScanInputs = {
+  cardNumber: CardScanInputTarget
+  expiry:
+    | CardScanInputTarget
+    | {
+        month: CardScanInputTarget
+        year: CardScanInputTarget
+      }
+  cardholderName?: CardScanInputTarget
+  securityCode?: CardScanInputTarget
+}
+
+export type CardScanFilledFields = Readonly<{
+  cardNumber: true
+  expiry: boolean
+  cardholderName: boolean
+  securityCode: boolean
+}>
+
+export type CardScanFillResult = Readonly<{
+  type: 'card_scan_fill'
+  display: Readonly<{
+    brand?: CardBrand
+    last4: string
+  }>
+  filled: CardScanFilledFields
+}>
+
+export type CardScanErrorCode =
+  | 'CARD_SCAN_ALREADY_OPEN'
+  | 'CARD_SCAN_CANCELLED'
+  | 'CARD_SCAN_CRYPTO_FAILED'
+  | 'CARD_SCAN_INVALID_CONTAINER'
+  | 'CARD_SCAN_INVALID_INPUTS'
+  | 'CARD_SCAN_PROTOCOL_ERROR'
+  | 'CARD_SCAN_TIMED_OUT'
+  | 'CARD_SCAN_UNAVAILABLE'
+  | 'CAMERA_PERMISSION_DENIED'
+  | 'CAMERA_UNAVAILABLE'
+  | 'MODEL_LOAD_FAILED'
+  | 'SCAN_FAILED'
+  | 'UNSUPPORTED_BROWSER'
+
+export interface CardScanError extends Error {
+  readonly name: 'CardScanError'
+  readonly code: CardScanErrorCode
+}
+
+export type ScanCardOptions = {
+  /** Merchant-owned card inputs populated after a successful scan. */
+  inputs: CardScanInputs
+  /** Optional portal target for the scanner modal. Defaults to document.body. */
+  container?: string | HTMLElement
+}
+
+/**
+ * Opens the Pay.com hosted scanner and fills the merchant inputs supplied in
+ * `options.inputs`. it resolves with brand, last four, and per-field fill metadata only.
+ */
+export type ScanCardFn = (
+  options: ScanCardOptions
+) => Promise<CardScanFillResult>
+
 export type CheckoutObject = {
   on: ListenerFn
   once: ListenerFn
@@ -786,6 +857,7 @@ export type CheckoutObject = {
   getExistingSources: () => Promise<ExistingSource[]>
   getPayoutSources: () => Promise<ExistingSource[]>
   refreshClientSecret: (clientSecret: string) => Promise<void>
+  scanCard: ScanCardFn
 }
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
