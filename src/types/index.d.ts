@@ -571,6 +571,7 @@ export type AddressType = {
 export type HeadlessPaymentOptions = {
   saveSourceForFutureUse?: boolean
   onValidateSession?: OnValidateSessionFn
+  forceRedirect?: boolean
 }
 
 export type HeadlessFn = (
