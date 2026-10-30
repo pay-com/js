@@ -14,12 +14,18 @@ interface InitData {
   debug: boolean
 }
 
+/**
+ * Style of a card field. `:focus.borderColor` sets the focus border colour and
+ * tints the focus ring to match.
+ */
+type CardFieldStyle = PayCssConfig
+
 interface CheckoutStyles {
   base?: PayCssConfig
-  number?: PayCssConfig
-  cvv?: PayCssConfig
-  expiry?: PayCssConfig
-  name?: PayCssConfig
+  number?: CardFieldStyle
+  cvv?: CardFieldStyle
+  expiry?: CardFieldStyle
+  name?: CardFieldStyle
   checkboxes?: {
     buttonBackground?: string
     labelColor?: string
