@@ -721,11 +721,18 @@ export type ExistingBankAccount = {
   details?: Record<string, string>
 }
 
+export type ExistingCashApp = {
+  username?: string
+  aliasType?: string
+  name?: string
+}
+
 export type ExistingSource = {
   id: string
   type: string
   card?: ExistingCard
   bank_account?: ExistingBankAccount
+  cashapp?: ExistingCashApp
 }
 
 export interface CvvToggles {
