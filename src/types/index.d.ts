@@ -721,11 +721,24 @@ export type ExistingBankAccount = {
   details?: Record<string, string>
 }
 
+export type ExistingCashApp = {
+  /**
+   * How the account was found: the $cashtag as is, or the masked phone
+   * number or email (`•••• 2225`, `j•••@example.com`).
+   */
+  username?: string
+  /** `NATIVE_ALIAS` for a $cashtag, `PHONE` or `EMAIL` */
+  aliasType?: string
+  name?: string
+}
+
 export type ExistingSource = {
   id: string
   type: string
   card?: ExistingCard
   bank_account?: ExistingBankAccount
+  /** Set when `type` is `cashapp` */
+  cashapp?: ExistingCashApp
 }
 
 export interface CvvToggles {
