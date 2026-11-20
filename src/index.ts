@@ -31,7 +31,9 @@ import {
   CheckoutObject,
   CheckoutFunction,
   PayComFunction,
-  PayComNamespace
+  PayComNamespace,
+  AuthenticationOpts,
+  AuthenticationFunction
 } from './types'
 import { PayComScriptOptions } from './types/script-options'
 
@@ -178,6 +180,8 @@ export type {
   CheckoutObject,
   CheckoutFunction,
   PayComFunction,
-  PayComNamespace
+  PayComNamespace,
+  AuthenticationOpts,
+  AuthenticationFunction
 }
 export default { com }

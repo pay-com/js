@@ -870,8 +870,24 @@ export type CheckoutObject = {
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
 
+export interface AuthenticationOpts {
+  /**
+   * The `client_secret` of a linked authentication session created on your server.
+   */
+  clientSecret: string
+}
+
+/**
+ * Opens the 3DS challenge of a linked authentication session in a modal overlay.
+ * Returns as soon as the overlay opens and doesn't report the outcome: wait for the
+ * `authentication_session.authenticated` or `authentication_session.failed` webhook,
+ * or retrieve the session from your server.
+ */
+export type AuthenticationFunction = (opts: AuthenticationOpts) => void
+
 export type PayComFunction = (opts: PayComOpts) => Promise<{
   checkout: CheckoutFunction
+  authentication: AuthenticationFunction
 }>
 
 export interface PayComNamespace {
