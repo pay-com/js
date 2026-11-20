@@ -1,4 +1,4 @@
-import EventEmitter from 'events'
+import type { EventEmitter } from 'events'
 import * as CSS from 'csstype'
 import type { PayComScriptOptions } from './script-options'
 
@@ -287,18 +287,31 @@ export type DynamicFieldStyles = {
   checkbox?: CheckboxStyleOverrides
 }
 
-type OnValidateSessionFn = (data: {
+export type ValidateSessionData = {
   paymentMethodType: string
-  fundingType?: CardFunding
-}) => Promise<boolean>
+  fundingType?: CardFunding | null
+  /**
+   * Apple Pay and Google Pay only: the raw payment response from the wallet's
+   * payment sheet (`ApplePayPayment` or Google Pay `PaymentData`).
+   */
+  walletResponse?: unknown
+}
+
+/**
+ * Runs right before a payment starts. Resolve `false` to block the payment.
+ */
+export type OnValidateSessionFn = (
+  data: ValidateSessionData
+) => Promise<boolean>
 
 export interface UniversalOpts {
   container: string
   cardForm?: Omit<RenderOpts, 'container' | 'style'>
   toggles?: UniversalToggles
   selectedPaymentMethod?: string
+  /** @deprecated Use onValidateSession instead */
   apmsOnClickValidation?: () => Promise<boolean>
-  onValidateSession?: onValidateSessionFn
+  onValidateSession?: OnValidateSessionFn
   localizations?: {
     [language: string]: LanguageLocalizationOverride
   }
@@ -313,6 +326,7 @@ export interface UniversalOpts {
     dividers?: {
       showOtherWaysToPay?: DividerStyles
       payWith?: DividerStyles
+      payWithCard?: DividerStyles
       savedPaymentMethods?: DividerStyles
     }
     existingSource?: {
@@ -403,13 +417,17 @@ export interface CheckoutOpts {
     style?: PayCssConfig
   }
   toggles?: {
-    displayFailureMessages: boolean
+    displayFailureMessages?: boolean
     displayEndOfSessionFailureMessages?: boolean
     disableAdditionalFields?: boolean
     whiteLabel?: boolean
     disableSetupFutureUsageCheckbox?: boolean
   }
-  locale?: Locale
+  /**
+   * Checkout language, for example `'de-DE'`. Only the language subtag selects
+   * the translations, so any BCP 47 tag is accepted.
+   */
+  locale?: Locale | (string & Record<never, never>)
   /**
    * If true, will use payout-able existing sources
    * @default false
@@ -430,7 +448,7 @@ interface PayComOpts {
   debug?: boolean
 }
 
-export enum EVENT_TYPES {
+export declare enum EVENT_TYPES {
   THREE_DS_INIT = 'three_ds_init',
   THREE_DS_CHALLENGE = 'three_ds_challenge',
   THREE_DS_DONE = 'three_ds_done',
@@ -451,6 +469,12 @@ export enum EVENT_TYPES {
   CARD_FUNDING_TYPE_UPDATE = 'card_funding_type_update'
 }
 
+type Listener<T extends string = string> = (
+  eventName: T,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  callback: (...params: any[]) => void
+) => EventEmitter
+
 export type ListenerFn = (
   eventName: EVENT_TYPES,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -462,14 +486,14 @@ export type ValidationResponse = {
   invalidFields: string[]
 }
 
-export enum ELEMENT_TYPES {
+export declare enum ELEMENT_TYPES {
   CHECKOUT = 'checkout',
   UNIVERSAL = 'universal',
   PAYPAL = 'paypal'
   // UNIVERSAL_V2 = 'universal-v2'
 }
 
-enum TransactionStatusEnum {
+declare enum TransactionStatusEnum {
   APPROVED = 'APPROVED',
   PENDING = 'PENDING',
   DECLINED = 'DECLINED',
@@ -505,7 +529,13 @@ export type ValidateResponse = {
 type RenderFn = (renderOpts: RenderOpts) => Promise<void>
 type PaypalFn = (paypalOpts: PaypalOpts) => Promise<void>
 type BlurFn = () => void
-type UniversalFn = (universalOpts: UniversalOpts) => Promise<void>
+
+export type UniversalObject = {
+  /** Disables or enables the rendered form. */
+  setDisabled: (disabled: boolean) => void
+}
+
+type UniversalFn = (universalOpts: UniversalOpts) => UniversalObject
 type SubmitFn = (
   opts?: SubmitOpts,
   frameType?: ELEMENT_TYPES
@@ -534,20 +564,20 @@ export type UpdateTransactionDetailsOpts = {
     phone?: string
   }
   billing?: {
-    addressLine: string
+    addressLine?: string
     addressLine2?: string
-    zip: string
-    city: string
+    zip?: string
+    city?: string
     state?: string
-    countryAlpha2: string
+    countryAlpha2?: string
   }
   shipping?: {
-    addressLine: string
+    addressLine?: string
     addressLine2?: string
-    zip: string
-    city: string
+    zip?: string
+    city?: string
     state?: string
-    countryAlpha2: string
+    countryAlpha2?: string
   }
   customFieldsValues?: Record<string, string | number | boolean>
 }
@@ -577,6 +607,8 @@ export type AddressType = {
 export type HeadlessPaymentOptions = {
   saveSourceForFutureUse?: boolean
   onValidateSession?: OnValidateSessionFn
+  /** APM redirect flows only: navigate the top window to the provider redirect
+   * url instead of the apm-configuration redirect mode (modal / new tab). */
   forceRedirect?: boolean
 }
 
@@ -608,7 +640,7 @@ export type CTPStyles = Partial<{
   linkNewCardContainer: PayCssConfig
 }>
 
-export enum CTP_EVENTS {
+export declare enum CTP_EVENTS {
   VALIDATION_CHANGED = 'validation-changed',
   AUTHENTICATED = 'authenticated'
 }
@@ -632,9 +664,9 @@ export type CheckoutCTPBillingDetails = {
 }
 
 export type HeadlessCtpObject = {
-  on: Listener<CTP_EVENTS>
-  once: Listener<CTP_EVENTS>
-  removeListener: Listener<CTP_EVENTS>
+  on: Listener<`${CTP_EVENTS}`>
+  once: Listener<`${CTP_EVENTS}`>
+  removeListener: Listener<`${CTP_EVENTS}`>
   validate: () => Promise<{ valid: boolean }>
   completePayment: (status: CtpCompletePaymentStatus) => Promise<void>
   updateBillingDetails: (
@@ -676,7 +708,7 @@ export type CardBrand =
   | 'mastercard'
   | 'amex'
   | 'discover'
-  | 'jcl'
+  | 'jcb'
   | 'unionpay'
 
 export type PaymentMethod = {
@@ -728,11 +760,25 @@ export type ExistingCashApp = {
 }
 
 export type ExistingSource = {
+  /** Pass as `source` to `checkout.pay()`. */
   id: string
   type: string
+  /** Token identifier of the source. Always set by `checkout.getExistingSources()`. */
+  token?: string
   card?: ExistingCard
+  bankAccount?: ExistingBankAccount
+  /**
+   * @deprecated The SDK never sets this key: bank account details are in
+   * `bankAccount`.
+   */
   bank_account?: ExistingBankAccount
+  paypal?: {
+    firstName: string
+    lastName: string
+  }
   cashapp?: ExistingCashApp
+  /** Other source types carry their details under a key named after the type. */
+  [key: string]: unknown
 }
 
 export interface CvvToggles {
@@ -870,9 +916,34 @@ export type CheckoutObject = {
 
 export type CheckoutFunction = (opts: CheckoutOpts) => CheckoutObject
 
-export type PayComFunction = (opts: PayComOpts) => Promise<{
+export interface AuthenticationOpts {
+  /**
+   * The `client_secret` of a linked authentication session created on your server.
+   */
+  clientSecret: string
+}
+
+/**
+ * Opens the 3DS challenge of a linked authentication session in a modal overlay.
+ * Returns as soon as the overlay opens and doesn't report the outcome: wait for the
+ * `authentication_session.authenticated` or `authentication_session.failed` webhook,
+ * or retrieve the session from your server.
+ */
+export type AuthenticationFunction = (opts: AuthenticationOpts) => void
+
+/**
+ * The `pay` instance returned by `Pay.com()`.
+ */
+export type PayComInstance = {
   checkout: CheckoutFunction
-}>
+  authentication: AuthenticationFunction
+}
+
+/**
+ * `window.Pay.com()`, which returns the instance directly. The package's default
+ * export `com()` loads the script first and returns a promise of the instance.
+ */
+export type PayComFunction = (opts: PayComOpts) => PayComInstance
 
 export interface PayComNamespace {
   com: PayComFunction
