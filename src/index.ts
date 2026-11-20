@@ -33,7 +33,11 @@ import {
   PayComFunction,
   PayComNamespace,
   AuthenticationOpts,
-  AuthenticationFunction
+  AuthenticationFunction,
+  PayComInstance,
+  ValidateSessionData,
+  OnValidateSessionFn,
+  UniversalObject
 } from './types'
 import { PayComScriptOptions } from './types/script-options'
 
@@ -182,6 +186,10 @@ export type {
   PayComFunction,
   PayComNamespace,
   AuthenticationOpts,
-  AuthenticationFunction
+  AuthenticationFunction,
+  PayComInstance,
+  ValidateSessionData,
+  OnValidateSessionFn,
+  UniversalObject
 }
 export default { com }
