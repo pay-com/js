@@ -57,14 +57,14 @@ checkout.on(checkout.EVENT_TYPES.PAYMENT_FAILURE, error => {
 In order to render a payment form, create an empty div which the form will be rendered in, e.g.:
 
 ```html
-<div id="paycom_checkout"></div>
+<div id="pay-com-checkout"></div>
 ```
 
 Once you have the div, call the `render` function:
 
 ```javascript
 checkout.universal({
-  container: '#paycom_checkout'
+  container: '#pay-com-checkout'
 })
 ```
 
@@ -76,7 +76,7 @@ If you wish to render the fields without a submission button for more control, y
 
 ```javascript
 checkout.universal({
-  container: '#paycom_checkout',
+  container: '#pay-com-checkout',
   toggles: {
     submitButton: false
   }
