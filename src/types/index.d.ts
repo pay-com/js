@@ -722,8 +722,7 @@ export type ExistingBankAccount = {
 }
 
 export type ExistingCashApp = {
-  username?: string
-  aliasType?: string
+  cashtag?: string
   name?: string
 }
 
