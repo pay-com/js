@@ -87,15 +87,9 @@ const loadScript = (
 ): Promise<PayComNamespace> => {
   validateArguments(options, PromisePonyfill)
 
-  const { live, sdkUrlOverride } = options
-
-  let jsUrl = live
-    ? 'https://js.pay.com/v1.js'
-    : 'https://js.staging.pay.com/v1.js'
-
-  if (sdkUrlOverride) {
-    jsUrl = sdkUrlOverride
-  }
+  // One script for the sandbox and live: the session's client secret decides the environment, and js.pay.com sends
+  // each call to the matching API. `live` is no longer read.
+  const jsUrl = options.sdkUrlOverride || 'https://js.pay.com/v1.js'
 
   let attempt = 0
 
